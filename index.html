@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<meta charset="UTF-8" />
+	<link rel="shortcut icon" href="_imagens/favicon.png" />
+	<meta name="author" content="Gabriel Teodoro" />
+	<meta name="keywords" content="CEP, Busca CEP, Consulta CEP" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+	<title>Info CEP</title>
+	<link rel="stylesheet" type="text/css" href="bootstrap/bootstrap-3.3.7-dist/css/bootstrap.min.css" />
+	<style type="text/css">
+		header {text-align: center;color: darkblue;}
+		h1 {font-size: 50pt;margin-top: 1.6cm;white-space: nowrap;}
+		small {font-size: 16pt;opacity: .9; white-space: nowrap;}
+		section {margin-left: 1.61px;}
+		input {font-size: 17pt;width:127px; height:30px;}
+		section#resultados {font-size: 13.5pt;}
+		@media screen and (max-width: 500px) {
+			section#resultados {
+				font-size: 19pt;
+				margin-top: 180px;
+				margin-bottom: 190px;
+			}
+			h1 {
+				margin-top: 40px;
+				font-size: 35pt;
+			}
+			input#cep {
+				margin-bottom: 100px;
+				width: 130px;
+			}
+		}
+		@media screen and (min-width: 900px) {
+			section#resultados {
+				font-size: 23pt;
+				margin-top: 40px;
+			}
+			input#cep {
+				font-size: 13pt;
+			}
+		}
+		@media screen and (min-width: 501px) {
+			h1 {margin-top: 20px;}
+			input {font-size: 17px;}
+		} 
+
+		@media screen and (max-width: 370px) {
+			h1 {font-size: 35px;}
+		}
+	</style>
+</head>
+<body style="background-color: #F8BE32">
+	<div class="container-fluid">	
+		<header>
+			<h1><strong><u>I N F O&nbsp;-&nbsp;C E P</u></strong></h1>
+		</header><br><br>
+		<section class="text-center">
+			<small><strong>Busque <wbr>por <wbr>qualquer CEP:</strong></small>
+			<small style="opacity: .43">&nbsp;<strong>(Apenas números!).</strong></small><br><br><br><input id="cep" type="text" id="cep" required="required" maxlength="8" minlength="8" placeholder="DIGITE AQUI" /><br><br>
+			<br><a href="#resultados" id="btn" class="btn btn-success" type="button">Consultar</a>
+		</section>
+
+		<section id="resultados">
+			<strong>Logradouro (Rua/Av.):</strong>&nbsp;<p id="logradouro"></p>
+			<br>
+			<strong>Bairro:&nbsp;</strong><p id="bairro"></p>
+			<br>
+			<strong>Cidade:&nbsp;</strong><p id="cidade"></p>
+		</section>
+		
+		<!--Necessary for Bootstrap-->
+    	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    	<script src="bootstrap/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    	<script type="text/javascript">
+    		window.onload = function () {
+    			var btn = document.getElementById('btn');
+    			btn.addEventListener('click', function() {
+	    			var cep = document.getElementById('cep').value;
+    				//get answer
+    				function requisicao() {
+		    			var api = 'https://viacep.com.br/ws/'+cep+'/json/';
+		    			var request = new XMLHttpRequest();
+		    			request.open('GET', api);
+		    			request.send();
+		    			request.onload = function() {
+		    				var logradouro = JSON.parse(request.responseText).logradouro;
+		    				document.getElementById('logradouro').innerHTML = logradouro;
+
+		    				var bairro = JSON.parse(request.responseText).bairro;
+		    				document.getElementById('bairro').innerHTML = bairro;
+
+		    				var cidade = JSON.parse(request.responseText).localidade;
+		    				document.getElementById('cidade').innerHTML = cidade;
+		    			}
+	    			}
+	    		//validate value
+	    		if (cep.indexOf("-") > -1){alert('Informe o CEP com apenas números!');}
+	    		else if (cep.length != 8) {alert('um CEP contém 8 dígitos!');} else {requisicao();}
+
+	    		});
+    		}
+    	</script>
+	</div>
+</body>
+</html>
